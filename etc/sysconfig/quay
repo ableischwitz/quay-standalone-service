@@ -35,7 +35,7 @@ QUAY_REDIS_PASSWORD=quaypass
 QUAY_REDIS_EXTRA_OPTS=""
 
 # Provide options to podman for Quay-mirror container instances
-QUAY_MIRROR_EXTRA_OPTS=""
+QUAY_MIRROR_EXTRA_OPTS="--env IGNORE_VALIDATION=true"
 
 # Path where configuration for Clair is located
 QUAY_CLAIRV4_CONFIG=/opt/clair/config

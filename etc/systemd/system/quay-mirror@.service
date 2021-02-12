@@ -2,7 +2,8 @@
 [Unit]
 Description=Quay mirror Container #%i
 Wants=network.target quay-service.service
-After=network-online.target
+After=network-online.target quay-database.service
+Requires=quay-database.service
 
 [Service]
 Type=forking
