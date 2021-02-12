@@ -1,0 +1,45 @@
+## https://www.redhat.com/sysadmin/podman-shareable-systemd-services
+[Unit]
+Description=PostgreSQL Container for Quay
+Wants=network.target
+After=network-online.target
+
+[Service]
+Type=forking
+TimeoutStartSec=5m
+Restart=on-failure
+RestartSec=60
+KillMode=none
+PIDFile=%t/%n-pid
+
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Environment=REGISTRY_AUTH_FILE=/etc/containers/pull-secret.json
+
+EnvironmentFile=-/etc/sysconfig/quay
+
+ExecStartPre=/bin/rm -f %t/%n-pid %t/%n-cid
+
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
+                              --cidfile %t/%n-cid \
+                              --cgroups=no-conmon \
+                              --detach \
+                              $QUAY_COMMON_EXTRA_OPTS \
+                              $QUAY_DATABASE_EXTRA_OPTS \
+                              --volume ${QUAY_DB_DATAPATH}:/var/lib/pgsql/data:Z \
+                              --publish 5432:5432 \
+                              --env POSTGRESQL_USER=${QUAY_DB_USER} \
+                              --env POSTGRESQL_PASSWORD=${QUAY_DB_PASSWORD} \
+                              --env POSTGRESQL_ADMIN_PASSWORD=${QUAY_DB_ADMIN_PASSWORD} \
+                              --env POSTGRESQL_DATABASE=${QUAY_DB} \
+                              --name quay-database \
+                              $QUAY_DB_IMAGE
+
+# delay start of database depending services
+ExecStartPost=/bin/sleep 30
+
+ExecStop=/usr/bin/podman stop --ignore --time 30 --cidfile %t/%n-cid
+
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
+
+[Install]
+WantedBy=multi-user.target

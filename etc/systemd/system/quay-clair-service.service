@@ -1,0 +1,43 @@
+## https://www.redhat.com/sysadmin/podman-shareable-systemd-services
+[Unit]
+Description=Quay Clair Scanner Service Container
+Wants=network.target quay-database.service
+After=network-online.target
+
+[Service]
+Type=forking
+TimeoutStartSec=5m
+Restart=on-failure
+RestartSec=30
+KillMode=none
+PIDFile=%t/%n-pid
+
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Environment=REGISTRY_AUTH_FILE=/etc/containers/pull-secret.json
+
+EnvironmentFile=-/etc/sysconfig/quay
+
+ExecStartPre=/bin/rm -f %t/%n-pid %t/%n-cid
+
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
+                              --cidfile %t/%n-cid \
+                              --cgroups=no-conmon \
+                              --detach \
+                              $QUAY_COMMON_EXTRA_OPTS \
+                              $QUAY_CLAIRV4_EXTRA_OPTS \
+                              --volume ${QUAY_CLAIRV4_CONFIG}:/clair:z,ro \
+                              --publish 8080:8080 \
+                              --publish 8089:8089 \
+                              --sysctl net.core.somaxconn=4096 \
+                              --env SSL_CERT_DIR=/clair/extra_ca_certs/ \
+                              --env CLAIR_CONF=/clair/config.yaml \
+                              --env CLAIR_MODE=combo \
+                              --name quay-clairv4 \
+                              $QUAY_CLAIRV4_IMAGE
+
+ExecStop=-/usr/bin/podman stop --ignore --time 10 --cidfile %t/%n-cid
+
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
+
+[Install]
+WantedBy=multi-user.target

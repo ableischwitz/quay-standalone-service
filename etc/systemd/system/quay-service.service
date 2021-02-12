@@ -1,0 +1,43 @@
+## https://www.redhat.com/sysadmin/podman-shareable-systemd-services
+[Unit]
+Description=Quay Service Container
+Wants=network.target quay-redis.service
+After=network-online.target quay-database.service quay-clair-service.service
+Requires=quay-database.service 
+
+[Service]
+Type=forking
+TimeoutStartSec=5m
+Restart=on-failure
+RestartSec=30
+KillMode=none
+PIDFile=%t/%n-pid
+
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Environment=REGISTRY_AUTH_FILE=/etc/containers/pull-secret.json
+
+EnvironmentFile=-/etc/sysconfig/quay
+
+ExecStartPre=/bin/rm -f %t/%n-pid %t/%n-cid
+
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
+                              --cidfile %t/%n-cid \
+                              --cgroups=no-conmon \
+                              --detach \
+                              $QUAY_COMMON_EXTRA_OPTS \
+                              $QUAY_EXTRA_OPTS \
+                              --volume ${QUAY_DATASTORE}:/datastorage:Z \
+                              --volume ${QUAY_CONFIG}:/conf/stack:z,ro \
+                              --publish 443:8443 \
+                              --publish 80:8080 \
+                              --sysctl net.core.somaxconn=4096 \
+                              --privileged=true \
+                              --name quay-service \
+                              $QUAY_IMAGE
+
+ExecStop=-/usr/bin/podman stop --ignore --time 10 --cidfile %t/%n-cid
+
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
+
+[Install]
+WantedBy=multi-user.target

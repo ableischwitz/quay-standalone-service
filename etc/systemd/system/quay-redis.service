@@ -1,0 +1,40 @@
+## https://www.redhat.com/sysadmin/podman-shareable-systemd-services
+[Unit]
+Description=Redis Service for Quay
+Wants=network.target
+After=network-online.target
+
+[Service]
+Type=forking
+TimeoutStartSec=5m
+Restart=on-failure
+RestartSec=30
+KillMode=none
+PIDFile=%t/%n-pid
+
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Environment=REGISTRY_AUTH_FILE=/etc/containers/pull-secret.json
+
+EnvironmentFile=-/etc/sysconfig/quay
+
+ExecStartPre=/bin/rm -f %t/%n-pid %t/%n-cid
+
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
+                              --cidfile %t/%n-cid \
+                              --cgroups=no-conmon \
+                              --detach \
+                              $QUAY_COMMON_EXTRA_OPTS \
+                              $QUAY_REDIS_EXTRA_OPTS \
+                              --env REDIS_PASSWORD=${QUAY_REDIS_PASSWORD} \
+                              --volume ${QUAY_REDIS_DATAPATH}:/var/lib/redis/data:Z \
+                              --publish 6379:6379 \
+                              --sysctl net.core.somaxconn=512 \
+                              --name quay-redis \
+                              $QUAY_REDIS_IMAGE
+
+ExecStop=/usr/bin/podman stop --ignore --time 10 --cidfile %t/%n-cid
+
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/%n-cid
+
+[Install]
+WantedBy=multi-user.target
