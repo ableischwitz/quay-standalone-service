@@ -65,17 +65,13 @@ In case the required image-versions are already present on the system, the **pul
 ## Adjust configuration options
 
 Most configuration can be done by changing the variables in `/etc/syconfig/quay`, but some may also require adjustements at other locations.
-It's always a good advise to change configuration settings for Quay by using the configuration tool:
+It's always a good advise to change configuration settings for Quay by using the [configuration tool](#start-quay-configuration-container):
 
 **Note:** remember to start **PostgreSQL** and **Redis** before starting the configuration container.
 
-```
-% podman run --rm -it --name quay_config -p 8080:8080 -v /opt/quay/config/:/conf/stack:Z registry.redhat.io/quay/quay-rhel8:v3.4.0 config admin
-```
-
 ## Start Redis and Postgresql
 
-After the `pull-secret.json` was configured or the required container have been pulled, it's time to start the database and also Redis.
+After `pull-secret.json` was configured or the required container have been pulled, it's time to start the database and also Redis.
 
 ```
 % systemctl start quay-redis
@@ -89,15 +85,36 @@ Check for errors during start:
 % podman logs quay-redis
 ```
 
-## Start Quay-configuration container
+## Configure Quay database
+
+After PostgreSQL started up, it's time to adjust some configuration for the quay and clair database:
 
 ```
-% podman run --rm -it --name quay_config -p 8080:8080 -v /opt/quay/config/:/conf/stack:Z registry.redhat.io/quay/quay-rhel8:v3.4.0 config admin
+##### Start psql session in quay-database container
+% podman exec -it quay-database /usr/bin/psql
+psql (10.15)
+Type "help" for help.
+
+##### Create quay database
+postgres=# CREATE DATABASE quaydb;
+CREATE DATABASE
+
+##### Switch to quay database
+postgresql=# \c quaydb
+
+##### Create pg_trgm extension for quay database
+quaydb=# CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION
+
+##### Create quay database user and grant permissions
+quaydb=# CREATE USER quayuser WITH PASSWORD 'quaypass' CREATDB;
+CREATE USER
+quaydb=# GRANT ALL PRIVILEGES ON DATABASE quaydb to quayuser;
+GRANT
+<ctrl+d>
 ```
 
-## Configure Clair database user
-
-If postgres started up, it's time to adjust some configuration for the clair database:
+## Configure Clair database
 
 ```
 ##### Start psql session in quay-database container
@@ -116,13 +133,36 @@ postgres=# \c clair
 clair=# CREATE EXTENSION IF NOT EXISTS uuid-ossp;
 CREATE EXTENSION
 
-#####  
+##### Create clair database user and grant permissions
 clair=# create USER clairuser WITH PASSWORD 'clairpass' CREATEDB;
 CREATE USER
 clair=# GRANT ALL PRIVILEGES ON DATABASE clair TO clairuser;
 GRANT
 <ctrl+d>
 ```
+
+## Check database connection
+
+```
+##### on Quay/Clair machine
+% sudo yum module enable postgresql:10/client
+% sudo yum -y install postgresql
+....
+
+% psql -h localhost -d quaydb -U quayuser
+Password for user quayuser: ******   (quaypass)
+psql (10.15)
+Type "help" for help.
+
+quaydb=> \q
+
+
+% psql -h localhost -d clair -U clairuser
+Password for user clairuser: ***** (clairpass)
+psql (10.15)
+Type "help" for help.
+
+clair=> \q
 
 ## Configure Clair
 
@@ -131,6 +171,12 @@ Adjust `/opt/clair/config/config-example.yaml` and copy/rename it to `config.yam
 The host `quay.example.com` will stand for the postgresql-hostname, but as this is an all-in-one setup, they should be the same.
 
 In case `Quay` will use custom signed certificates, the CA-certificates used for signing should be located in `/opt/clair/config/extra_ca_certs`.
+
+## Start Quay-configuration container
+
+```
+% podman run --rm -it --name quay_config -p 8080:8080 -v /opt/quay/config/:/conf/stack:Z registry.redhat.io/quay/quay-rhel8:v3.4.0 config admin
+```
 
 # Starting services
 
