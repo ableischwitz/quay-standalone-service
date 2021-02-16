@@ -163,6 +163,7 @@ psql (10.15)
 Type "help" for help.
 
 clair=> \q
+```
 
 ## Configure Clair
 
