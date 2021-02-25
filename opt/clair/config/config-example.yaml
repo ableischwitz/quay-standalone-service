@@ -4,7 +4,15 @@ http_listen_addr: :8080
 log_level: debug
 #updaters:
 #  sets:
-#    - rhel
+#    - "alpine"
+#    - "aws"
+#    - "debian"
+#    - "oracle"
+#    - "photon"
+#    - "pyupio"
+#    - "rhel"
+#    - "suse"
+#    - "ubuntu"
 indexer:
   connstring: host=quay.example.com port=5432 dbname=clair user=clairuser password=clairpass sslmode=disable
   scanlock_retry: 10
@@ -16,16 +24,6 @@ matcher:
   max_conn_pool: 100
   run: ""
   migrations: true
-#  updater_sets:
-#  - "alpine"
-#  - "aws"
-#  - "debian"
-#  - "oracle"
-#  - "photon"
-#  - "pyupio"
-#  - "rhel"
-#  - "suse"
-#  - "ubuntu"
 notifier:
   indexer_addr: localhost:8080
   matcher_addr: localhost:8080
@@ -47,3 +45,10 @@ trace:
     service_name: "clair"
 metrics:
   name: "prometheus"
+auth:
+  psk:
+    key: >-
+      { base64 encoded string from Quays SECURITY_SCANNER_V4_PSK setting }
+    iss:
+      - quay
+      - clairctl
