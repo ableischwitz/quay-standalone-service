@@ -44,7 +44,7 @@ QUAY_CLAIRV4_CONFIG=/opt/clair/config
 QUAY_CLAIRV4_EXTRA_OPTS="--env HTTP_PROXY=http://proxy.example.com:3128 --env HTTPS_PROXY=http://proxy.example.com:3128 --env NO_PROXY=example.com"
 
 # Images to be used - please read documentation for current images.
-QUAY_IMAGE=registry.redhat.io/quay/quay-rhel8:v3.4.0
-QUAY_CLAIRV4_IMAGE=registry.redhat.io/quay/clair-rhel8:v3.4.0
-QUAY_DB_IMAGE=registry.redhat.io/rhel8/postgresql-10
-QUAY_REDIS_IMAGE=registry.redhat.io/rhel8/redis-5
+QUAY_IMAGE=registry.redhat.io/quay/quay-rhel8:v3.4.1
+QUAY_CLAIRV4_IMAGE=registry.redhat.io/quay/clair-rhel8:v3.4.1
+QUAY_DB_IMAGE=egistry.redhat.io/rhel8/postgresql-10:1
+QUAY_REDIS_IMAGE=registry.redhat.io/rhel8/redis-5:1
