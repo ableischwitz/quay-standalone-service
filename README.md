@@ -64,7 +64,7 @@ In case the required image-versions are already present on the system, the **pul
 
 ## Adjust configuration options
 
-Most configuration can be done by changing the variables in `/etc/syconfig/quay`, but some may also require adjustements at other locations.
+Most configuration can be done by changing the variables in `/etc/sysconfig/quay`, but some may also require adjustements at other locations.
 It's always a good advise to change configuration settings for Quay by using the [configuration tool](#start-quay-configuration-container):
 
 **Note:** remember to start **PostgreSQL** and **Redis** before starting the configuration container.
