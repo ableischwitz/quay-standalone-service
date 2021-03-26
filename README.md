@@ -176,7 +176,7 @@ In case `Quay` will use custom signed certificates, the CA-certificates used for
 ## Start Quay-configuration container
 
 ```
-% podman run --rm -it --name quay_config -p 8080:8080 -v /opt/quay/config/:/conf/stack:Z registry.redhat.io/quay/quay-rhel8:v3.4.0 config admin
+% podman run --rm -it --name quay_config -p 8080:8080 -v /opt/quay/config/:/conf/stack:Z registry.redhat.io/quay/quay-rhel8:v3.4.1 config admin
 ```
 
 # Starting services
