@@ -130,7 +130,7 @@ CREATE DATABASE
 postgres=# \c clair
 
 ##### Create uuid-ossp extension for clair database
-clair=# CREATE EXTENSION IF NOT EXISTS uuid-ossp;
+clair=# CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION
 
 ##### Create clair database user and grant permissions
