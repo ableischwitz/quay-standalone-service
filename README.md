@@ -34,6 +34,9 @@ It's best practice to separate at least `/opt/quay/storage` and `/opt/quay/db` a
 # Create filesystem structure for Quay/Clair
 % mkdir -p /opt/quay/{config,db,storage,redis}
 % mkdir -p /opt/clair/config
+
+# Adjust permissions for postgresql
+% setfacl -m u:26:-wx /opt/quay/db
 ```
 
 ## Prepare firewall
