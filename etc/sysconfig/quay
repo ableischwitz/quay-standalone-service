@@ -1,3 +1,7 @@
+# Export Proxy variables in case this is needed
+#http_proxy=<your_proxy_name/ip:port>
+#https_proxy=<your_proxy_name/ip:port>
+
 # Path where configuration-bundle of Quay-config was extracted to
 # see https://access.redhat.com/documentation/en-us/red_hat_quay/3.4/html/deploy_red_hat_quay_for_proof-of-concept_non-production_purposes/deploying_and_using_red_hat_quay
 QUAY_CONFIG=/opt/quay/config
