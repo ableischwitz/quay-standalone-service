@@ -27,7 +27,7 @@ It's best practice to separate at least `/opt/quay/storage` and `/opt/quay/db` a
 
 ```
 # Add proper SELinux types for container filesystem
-% semanage fcontext -a -t container_file_t '/opt/quay/(config|storage|redis)(/.*)?'
+% semanage fcontext -a -t container_file_t '/opt/quay/(config|storage|redis|db)(/.*)?'
 % semanage fcontext -a -t container_file_t '/opt/clair/config(/.*)?'
 
 
@@ -110,7 +110,7 @@ quaydb=# CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION
 
 ##### Create quay database user and grant permissions
-quaydb=# CREATE USER quayuser WITH PASSWORD 'quaypass' CREATDB;
+quaydb=# CREATE USER quayuser WITH PASSWORD 'quaypass' CREATEDB;
 CREATE USER
 quaydb=# GRANT ALL PRIVILEGES ON DATABASE quaydb to quayuser;
 GRANT
