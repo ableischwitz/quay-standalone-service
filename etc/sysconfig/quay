@@ -27,6 +27,7 @@ QUAY_DB_USER=quayuser
 QUAY_DB_PASSWORD=quaypass
 QUAY_DB_ADMIN_PASSWORD=quayadmin
 QUAY_DB=quaydb
+QUAY_DB_PORT=5432
 
 # Provide options to podman for postgres
 QUAY_DATABASE_EXTRA_OPTS=""
@@ -46,6 +47,18 @@ QUAY_CLAIRV4_CONFIG=/opt/clair/config
 # Provide options to podman for Clar container
 # You may use *_PROXY environment variabled to use a proxy.
 QUAY_CLAIRV4_EXTRA_OPTS="--env HTTP_PROXY=http://proxy.example.com:3128 --env HTTPS_PROXY=http://proxy.example.com:3128 --env NO_PROXY=example.com"
+
+# Path to postgres data
+QUAY_CLAIR_DB_DATAPATH=/opt/clair/db
+# Database credentials - if changed, adjust quay- and clair-config
+QUAY_CLAIR_DB_USER=clairuser
+QUAY_CLAIR_DB_PASSWORD=clairpass
+QUAY_CLAIR_DB_ADMIN_PASSWORD=clairadmin
+QUAY_CLAIR_DB=clairdb
+QUAY_CLAIR_DB_PORT=5433
+
+# Provide options to podman for postgres
+QUAY_CLAIR_DATABASE_EXTRA_OPTS=""
 
 # Images to be used - please read documentation for current images.
 QUAY_IMAGE=registry.redhat.io/quay/quay-rhel8:v3.4.1

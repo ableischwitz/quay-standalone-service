@@ -1,7 +1,7 @@
 ## https://www.redhat.com/sysadmin/podman-shareable-systemd-services
 [Unit]
 Description=Quay Clair Scanner Matcher Service
-Wants=network.target quay-database.service
+Wants=network.target quay-clair-database.service
 After=network-online.target
 
 [Service]

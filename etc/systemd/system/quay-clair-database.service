@@ -1,6 +1,6 @@
 ## https://www.redhat.com/sysadmin/podman-shareable-systemd-services
 [Unit]
-Description=PostgreSQL Container for Quay
+Description=PostgreSQL Container for Quay Clair
 Wants=network.target
 After=network-online.target
 
@@ -24,13 +24,13 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
                               --cgroups=no-conmon \
                               --detach \
                               $QUAY_COMMON_EXTRA_OPTS \
-                              $QUAY_DATABASE_EXTRA_OPTS \
-                              --volume ${QUAY_DB_DATAPATH}:/var/lib/pgsql/data:Z \
-                              --publish ${QUAY_DB_PORT}:5432 \
-                              --env POSTGRESQL_USER=${QUAY_DB_USER} \
-                              --env POSTGRESQL_PASSWORD=${QUAY_DB_PASSWORD} \
-                              --env POSTGRESQL_ADMIN_PASSWORD=${QUAY_DB_ADMIN_PASSWORD} \
-                              --env POSTGRESQL_DATABASE=${QUAY_DB} \
+                              $QUAY_CLAIR_DATABASE_EXTRA_OPTS \
+                              --volume ${QUAY_CLAIR_DB_DATAPATH}:/var/lib/pgsql/data:Z \
+                              --publish ${QUAY_CLAIR_DB_PORT}:5432 \
+                              --env POSTGRESQL_USER=${QUAY_CLAIR_DB_USER} \
+                              --env POSTGRESQL_PASSWORD=${QUAY_CLAIR_DB_PASSWORD} \
+                              --env POSTGRESQL_ADMIN_PASSWORD=${QUAY_CLAIR_DB_ADMIN_PASSWORD} \
+                              --env POSTGRESQL_DATABASE=${QUAY_CLAIR_DB} \
                               --name quay-database \
                               $QUAY_DB_IMAGE
 
