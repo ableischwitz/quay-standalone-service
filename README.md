@@ -22,21 +22,22 @@ Please also note that this kind of setup is only for prove of concept setups and
   * /opt/quay/redis
   * /opt/quay/storage
   * /opt/clair/config
+  * /opt/clair/db
 
-It's best practice to separate at least `/opt/quay/storage` and `/opt/quay/db` as those directories will tend to grow.
+It's best practice to separate at least `/opt/quay/storage`, `/opt/quay/db` and `/opt/clair/db` as those directories will tend to grow.
 
 ```
 # Add proper SELinux types for container filesystem
-% semanage fcontext -a -t container_file_t '/opt/quay/(config|storage|redis)(/.*)?'
-% semanage fcontext -a -t container_file_t '/opt/clair/config(/.*)?'
+% semanage fcontext -a -t container_file_t '/opt/quay/(config|storage|redis|db)(/.*)?'
+% semanage fcontext -a -t container_file_t '/opt/clair/(config|db)(/.*)?'
 
 
 # Create filesystem structure for Quay/Clair
 % mkdir -p /opt/quay/{config,db,storage,redis}
-% mkdir -p /opt/clair/config
+% mkdir -p /opt/clair/{config,db}
 
 # Adjust permissions for postgresql
-% setfacl -m u:26:-wx /opt/quay/db
+% setfacl -m u:26:-wx /opt/{quay,clair}/db
 ```
 
 ## Prepare firewall
@@ -49,8 +50,10 @@ It's best practice to separate at least `/opt/quay/storage` and `/opt/quay/db` a
 # Open port for Clair-v4
 % firewall-cmd --permanent --zone=public --add-port=8080/tcp
 
-# Open port for PostgreSQL - this will expose the database outside the host!!
+# Open port for Quay PostgreSQL - this will expose the database outside the host!!
 % firewall-cmd --permanent --zone=public --add-service postgresql
+# Open port for Clair PostgreSQL - this will expose the database outside the host!!
+% firewall-cmd --permanent --zone=public --add-port 5433
 
 # Open port for Redis - same for redis
 % firewall-cmd --permanent --zone=public --add-service redis
@@ -79,12 +82,14 @@ After `pull-secret.json` was configured or the required container have been pull
 ```
 % systemctl start quay-redis
 % systemctl start quay-database
+% systemctl start quay-clair-database
 ```
 
 Check for errors during start:
 ```
 % journalctl -xf
 % podman logs quay-database
+% podman logs quay-clair-database
 % podman logs quay-redis
 ```
 
@@ -110,7 +115,7 @@ quaydb=# CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION
 
 ##### Create quay database user and grant permissions
-quaydb=# CREATE USER quayuser WITH PASSWORD 'quaypass' CREATDB;
+quaydb=# CREATE USER quayuser WITH PASSWORD 'quaypass' CREATEDB;
 CREATE USER
 quaydb=# GRANT ALL PRIVILEGES ON DATABASE quaydb to quayuser;
 GRANT
@@ -121,7 +126,7 @@ GRANT
 
 ```
 ##### Start psql session in quay-database container
-% podman exec -it quay-database /usr/bin/psql
+% podman exec -it quay-clair-database /usr/bin/psql
 psql (10.15)
 Type "help" for help.
 
@@ -160,7 +165,7 @@ Type "help" for help.
 quaydb=> \q
 
 
-% psql -h localhost -d clair -U clairuser
+% psql -h localhost -d clair -U clairuser -p 5433
 Password for user clairuser: ***** (clairpass)
 psql (10.15)
 Type "help" for help.
