@@ -31,7 +31,6 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
                               --publish 443:8443 \
                               --publish 80:8080 \
                               --sysctl net.core.somaxconn=4096 \
-                              --privileged=true \
                               --name quay-service \
                               $QUAY_IMAGE
 
