@@ -99,7 +99,7 @@ After PostgreSQL started up, it's time to adjust some configuration for the quay
 
 ```
 ##### Start psql session in quay-database container
-% podman exec -it quay-database /usr/bin/psql -d quaydb
+% podman exec -it quay-database /usr/bin/psql -d quaydb -U postgres
 psql (10.15)
 Type "help" for help.
 
@@ -113,7 +113,7 @@ CREATE EXTENSION
 
 ```
 ##### Start psql session in quay-database container
-% podman exec -it quay-clair-database /usr/bin/psql -d clair
+% podman exec -it quay-clair-database /usr/bin/psql -d clair -U postgres
 psql (10.15)
 Type "help" for help.
 
