@@ -26,7 +26,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
                               $QUAY_COMMON_EXTRA_OPTS \
                               $QUAY_CLAIRV4_EXTRA_OPTS \
                               --volume ${QUAY_CLAIRV4_CONFIG}:/clair:z,ro \
-                              --publish 8080:8080 \
+                              --publish 8081:8081 \
                               --sysctl net.core.somaxconn=4096 \
                               --env CLAIR_CONF=/clair/config.yaml \
                               --env CLAIR_MODE=indexer \
