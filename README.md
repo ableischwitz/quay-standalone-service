@@ -99,26 +99,13 @@ After PostgreSQL started up, it's time to adjust some configuration for the quay
 
 ```
 ##### Start psql session in quay-database container
-% podman exec -it quay-database /usr/bin/psql
+% podman exec -it quay-database /usr/bin/psql -d quaydb
 psql (10.15)
 Type "help" for help.
-
-##### Create quay database
-postgres=# CREATE DATABASE quaydb;
-CREATE DATABASE
-
-##### Switch to quay database
-postgresql=# \c quaydb
 
 ##### Create pg_trgm extension for quay database
 quaydb=# CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION
-
-##### Create quay database user and grant permissions
-quaydb=# CREATE USER quayuser WITH PASSWORD 'quaypass' CREATEDB;
-CREATE USER
-quaydb=# GRANT ALL PRIVILEGES ON DATABASE quaydb to quayuser;
-GRANT
 <ctrl+d>
 ```
 
@@ -126,26 +113,13 @@ GRANT
 
 ```
 ##### Start psql session in quay-database container
-% podman exec -it quay-clair-database /usr/bin/psql
+% podman exec -it quay-clair-database /usr/bin/psql -d clair
 psql (10.15)
 Type "help" for help.
-
-##### Create clair database
-postgres=# CREATE DATABASE clair;
-CREATE DATABASE
-
-##### Switch to clair database
-postgres=# \c clair
 
 ##### Create uuid-ossp extension for clair database
 clair=# CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION
-
-##### Create clair database user and grant permissions
-clair=# create USER clairuser WITH PASSWORD 'clairpass' CREATEDB;
-CREATE USER
-clair=# GRANT ALL PRIVILEGES ON DATABASE clair TO clairuser;
-GRANT
 <ctrl+d>
 ```
 
