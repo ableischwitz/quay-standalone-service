@@ -53,7 +53,8 @@ It's best practice to separate at least `/opt/quay/storage`, `/opt/quay/db` and 
 # Open port for Quay PostgreSQL - this will expose the database outside the host!!
 % firewall-cmd --permanent --zone=public --add-service postgresql
 # Open port for Clair PostgreSQL - this will expose the database outside the host!!
-% firewall-cmd --permanent --zone=public --add-port 5433
+# If not using this setups default port 5433 for Clair's postgres, please adjust accordingly
+% firewall-cmd --permanent --zone=public --add-port 5433/tcp
 
 # Open port for Redis - same for redis
 % firewall-cmd --permanent --zone=public --add-service redis
