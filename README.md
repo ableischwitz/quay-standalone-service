@@ -1,9 +1,9 @@
 # quay-standalone-service
-Configuration and SystemD files to run Quay-3.4+ on a single host
+Configuration and SystemD files to run Quay-3.5+ on a single host
 
 # Precautions/Introduction
 
-Please read the [official documentation of Red Hat Quay](https://access.redhat.com/documentation/en-us/red_hat_quay/3.4/html/deploy_red_hat_quay_for_proof-of-concept_non-production_purposes/index) and validate the steps described here.
+Please read the [official documentation of Red Hat Quay](https://access.redhat.com/documentation/en-us/red_hat_quay/3.5/html/deploy_red_hat_quay_for_proof-of-concept_non-production_purposes/index) and validate the steps described here.
 In doubts the official documentation would be source of truth.
 
 Please also note that this kind of setup is only for prove of concept setups and high-availability requirements are not fulfilled by this.
@@ -159,7 +159,7 @@ In case `Quay` will use custom signed certificates, the CA-certificates used for
 ## Start Quay-configuration container
 
 ```
-% podman run --rm -it --name quay_config -p 8080:8080 -v /opt/quay/config/:/conf/stack:Z registry.redhat.io/quay/quay-rhel8:v3.4.1 config admin
+% podman run --rm -it --name quay_config -p 8080:8080 -v /opt/quay/config/:/conf/stack:Z registry.redhat.io/quay/quay-rhel8:v3.5.6 config admin
 ```
 
 # Starting services

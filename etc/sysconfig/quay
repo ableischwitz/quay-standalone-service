@@ -65,7 +65,7 @@ QUAY_CLAIR_DB_SHARED_BUFFERS=512MB
 QUAY_CLAIR_DATABASE_EXTRA_OPTS=""
 
 # Images to be used - please read documentation for current images.
-QUAY_IMAGE=registry.redhat.io/quay/quay-rhel8:v3.4.1
-QUAY_CLAIRV4_IMAGE=registry.redhat.io/quay/clair-rhel8:v3.4.1
+QUAY_IMAGE=registry.redhat.io/quay/quay-rhel8:v3.5.6
+QUAY_CLAIRV4_IMAGE=registry.redhat.io/quay/clair-rhel8:v3.5.6
 QUAY_DB_IMAGE=registry.redhat.io/rhel8/postgresql-10:1
 QUAY_REDIS_IMAGE=registry.redhat.io/rhel8/redis-5:1
