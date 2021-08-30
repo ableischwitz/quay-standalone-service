@@ -182,6 +182,8 @@ With the configuration done, it's now time to (re)-start the services
 
 In case more mirror workers would be required, just count them up `quay-mirror@1`, `quay-mirror@2` ... `quay-mirror@n`. Keep in mind that they all will require some resources.
 
+The value of `QUAY_DB_MAX_CONNECTIONS` and `QUAY_DB_SHARED_BUFFERS` may be required to be adjusted if either there are error messages seen in the Quay-logs or several mirror processes are used.
+
 By default all container should provide a status for SystemD, so that `systemctl status quay-\*` should provide a good overview of the services. If some closer look at the processes inside the container
 would be needed, use `podman logs -f quay-service` or any other container instead of **quay-service**.
 

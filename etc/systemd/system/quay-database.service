@@ -31,6 +31,8 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/%n-pid \
                               --env POSTGRESQL_PASSWORD=${QUAY_DB_PASSWORD} \
                               --env POSTGRESQL_ADMIN_PASSWORD=${QUAY_DB_ADMIN_PASSWORD} \
                               --env POSTGRESQL_DATABASE=${QUAY_DB} \
+                              --env POSTGRESQL_MAX_CONNECTIONS=${QUAY_DB_MAX_CONNECTIONS} \
+                              --env POSTGRESQL_SHARED_BUFFERS=${QUAY_DB_SHARED_BUFFERS} \
                               --name quay-database \
                               $QUAY_DB_IMAGE
 
